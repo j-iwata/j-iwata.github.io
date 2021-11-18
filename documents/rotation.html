@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. 座標変換と回転 &#8212; First-principles calculation code  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="prev" title="2. 交換相関汎関数について" href="xc.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="xc.html" title="2. 交換相関汎関数について"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>座標変換と回転</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1><span class="section-number">3. </span>座標変換と回転<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id2">
+<h2><span class="section-number">3.1. </span>格子座標<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+x_1 \\
+x_2 \\
+x_3
+\end{pmatrix}
+=
+\begin{pmatrix}
+a_{11} &amp; a_{12} &amp; a_{13} \\
+a_{21} &amp; a_{22} &amp; a_{23} \\
+a_{31} &amp; a_{32} &amp; a_{33} \\
+\end{pmatrix}
+\begin{pmatrix}
+\alpha_1  \\
+\alpha_2 \\
+\alpha_3
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[x_i = \sum_{j=1}^3 a_{ij} \alpha_j\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\boldsymbol{a}_1 =
+\begin{pmatrix}
+a_{11} \\
+a_{21} \\
+a_{31}
+\end{pmatrix}
+, \quad
+\boldsymbol{a}_2 =
+\begin{pmatrix}
+a_{12} \\
+a_{22} \\
+a_{32}
+\end{pmatrix}
+, \quad
+\boldsymbol{a}_3 =
+\begin{pmatrix}
+a_{13} \\
+a_{23} \\
+a_{33}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{a}_i \cdot \boldsymbol{b}_j = 2\pi\delta_{ij}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}A \equiv
+\begin{pmatrix}
+a_{11} &amp; a_{12} &amp; a_{13} \\
+a_{21} &amp; a_{22} &amp; a_{23} \\
+a_{31} &amp; a_{32} &amp; a_{33} \\
+\end{pmatrix}
+, \qquad
+B \equiv
+\begin{pmatrix}
+b_{11} &amp; b_{12} &amp; b_{13} \\
+b_{21} &amp; b_{22} &amp; b_{23} \\
+b_{31} &amp; b_{32} &amp; b_{33} \\
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+a_{11} &amp; a_{21} &amp; a_{31} \\
+a_{12} &amp; a_{22} &amp; a_{32} \\
+a_{13} &amp; a_{23} &amp; a_{33} \\
+\end{pmatrix}
+\begin{pmatrix}
+b_{11} &amp; b_{12} &amp; b_{13} \\
+b_{21} &amp; b_{22} &amp; b_{23} \\
+b_{31} &amp; b_{32} &amp; b_{33} \\
+\end{pmatrix}
+=
+A^\top B = 2\pi I\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{1}{2\pi}A^\top = B^{-1}
+\\
+\frac{1}{2\pi}B^\top = A^{-1}\end{split}\]</div>
+</div>
+<div class="section" id="id3">
+<h2><span class="section-number">3.2. </span>回転+並進<a class="headerlink" href="#id3" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+x_1' \\
+x_2' \\
+x_3'
+\end{pmatrix}
+=
+\begin{pmatrix}
+R_{11} &amp; R_{12} &amp; R_{13} \\
+R_{21} &amp; R_{22} &amp; R_{23} \\
+R_{31} &amp; R_{32} &amp; R_{33} \\
+\end{pmatrix}
+\begin{pmatrix}
+x_1  \\
+x_2 \\
+x_3
+\end{pmatrix}
++
+\begin{pmatrix}
+t_1 \\
+t_2 \\
+t_3
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}R \equiv
+\begin{pmatrix}
+R_{11} &amp; R_{12} &amp; R_{13} \\
+R_{21} &amp; R_{22} &amp; R_{23} \\
+R_{31} &amp; R_{32} &amp; R_{33} \\
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[R^\top = R^{-1}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}A \begin{pmatrix}
+\alpha_1' \\
+\alpha_2' \\
+\alpha_3' \\
+\end{pmatrix}
+=
+R A
+\begin{pmatrix}
+\alpha_1 \\
+\alpha_2 \\
+\alpha_3 \\
+\end{pmatrix}
++
+A \begin{pmatrix}
+\tau_1 \\
+\tau_2 \\
+\tau_3
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\alpha_1' \\
+\alpha_2' \\
+\alpha_3' \\
+\end{pmatrix}
+=
+A^{-1} R A
+\begin{pmatrix}
+\alpha_1 \\
+\alpha_2 \\
+\alpha_3 \\
+\end{pmatrix}
++
+\begin{pmatrix}
+\tau_1 \\
+\tau_2 \\
+\tau_3
+\end{pmatrix}\end{split}\]</div>
+</div>
+<div class="section" id="id4">
+<h2><span class="section-number">3.3. </span>関数の回転<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>3次元（カーテシアン）座標の回転を</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r}' = R \boldsymbol{r}\]</div>
+<p>と表す。関数の回転を次のように定義する。</p>
+<div class="math notranslate nohighlight">
+\[f'(\boldsymbol{r}') = f(\boldsymbol{r})\]</div>
+<p>回転した先の座標で、元と同じ値を取るべしという意味である。このとき</p>
+<div class="math notranslate nohighlight">
+\[f'(\boldsymbol{r}') = f(\boldsymbol{r}) = f(R^{-1}\boldsymbol{r}')\]</div>
+<p>となるので、回転された関数は</p>
+<div class="math notranslate nohighlight">
+\[f'(\boldsymbol{r}) = f(R^{-1}\boldsymbol{r})\]</div>
+<p>という値を取るものになる事がわかる。</p>
+</div>
+<div class="section" id="id5">
+<h2><span class="section-number">3.4. </span>関数に回転不変性がある場合<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p><span class="math notranslate nohighlight">\(f'=f\)</span> となる場合には</p>
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{r}) = f(R^{-1}\boldsymbol{r})\]</div>
+<p>が成り立つ。これにより <span class="math notranslate nohighlight">\(\boldsymbol{r}\)</span> での関数値が分かっていれば、
+回転で移った先の座標での関数値も直ちにわかる。これを利用すれば、関数を評価する点の数を削減したり、
+関数形の事前情報として反復計算のようなものを加速する事が可能となる。</p>
+</div>
+<div class="section" id="id6">
+<h2><span class="section-number">3.5. </span>回転と並進がある場合の関数の変換<a class="headerlink" href="#id6" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>回転 <span class="math notranslate nohighlight">\(\alpha\)</span> を行ってから並進 <span class="math notranslate nohighlight">\(\boldsymbol{b}\)</span> を行う操作を</p>
+<div class="math notranslate nohighlight">
+\[\left\{ \alpha \left| \boldsymbol{b} \right. \right\} \boldsymbol{r}
+= \alpha \boldsymbol{r} + \boldsymbol{b}
+\equiv \boldsymbol{r}'\]</div>
+<p>と表す事にする。この逆の操作は</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol{r} =
+\left\{ \alpha \left| \boldsymbol{b} \right. \right\}^{-1} \boldsymbol{r}'
+= \alpha^{-1} \left( \boldsymbol{r}' -  \boldsymbol{b} \right)
+= \alpha^{-1} \boldsymbol{r}' - \alpha^{-1}\boldsymbol{b}\]</div>
+<p>となる。すなわち</p>
+<div class="math notranslate nohighlight">
+\[\left\{ \alpha \left| \boldsymbol{b} \right. \right\}^{-1}
+=
+\left\{ \alpha^{-1} \left| - \alpha^{-1}\boldsymbol{b} \right. \right\}\]</div>
+<p>という操作となる。</p>
+</div>
+<div class="section" id="bloch">
+<h2><span class="section-number">3.6. </span>Bloch関数の変換<a class="headerlink" href="#bloch" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>回転されたブロッホ関数の取る値は、回転前の関数を用いて</p>
+<div class="math notranslate nohighlight">
+\[\psi'_{n\boldsymbol{k}}(\boldsymbol{r})
+= \psi_{n\boldsymbol{k}}(\alpha^{-1}\boldsymbol{r}-\alpha^{-1}\boldsymbol{b})\]</div>
+<p>と評価できる。任意の格子ベクトル <span class="math notranslate nohighlight">\(\boldsymbol{R}\)</span> の平行移動を考える。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\psi'_{n\boldsymbol{k}}(\boldsymbol{r}+\boldsymbol{R})
+&amp; = &amp; \psi_{n\boldsymbol{k}}
+( \alpha^{-1}( \boldsymbol{r} + \boldsymbol{R} ) -\alpha^{-1}\boldsymbol{b} ) \\
+&amp; = &amp; e^{ \boldsymbol{k} \cdot \alpha^{-1}\boldsymbol{R} }
+\psi_{n\boldsymbol{k}}
+( \alpha^{-1}\boldsymbol{r} -\alpha^{-1}\boldsymbol{b} ) \\
+&amp; = &amp; e^{ \alpha\boldsymbol{k} \cdot \boldsymbol{R} }
+\psi'_{n\boldsymbol{k}}( \boldsymbol{r} )\end{split}\]</div>
+<p>これより回転された波数 <span class="math notranslate nohighlight">\(\boldsymbol{k}\)</span> のBloch関数は、
+波数 <span class="math notranslate nohighlight">\(\alpha\boldsymbol{k}\)</span> のBloch関数となることがわかる。
+系に回転＋並進の不変性（対称性）があれば</p>
+<div class="math notranslate nohighlight">
+\[\psi_{n\boldsymbol{k}}
+( \alpha^{-1}\boldsymbol{r} -\alpha^{-1}\boldsymbol{b} )\]</div>
+<p>を波数 <span class="math notranslate nohighlight">\(\alpha\boldsymbol{k}\)</span> のBloch関数として使えることになる。</p>
+</div>
+<div class="section" id="id7">
+<h2><span class="section-number">3.7. </span>回転不変性を持つ関数の微分<a class="headerlink" href="#id7" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[f(\boldsymbol{r}) = f(R^{-1}\boldsymbol{r})\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\partial f(\boldsymbol{r})}{\partial x_i}
+&amp; = &amp; \sum_{j=1}^3
+\left. \frac{\partial f(\boldsymbol{r}')}{\partial x'_j} \right|
+  _{ \boldsymbol{r}'=R^{-1}\boldsymbol{r} }
+\frac{\partial x'_j}{\partial x_i} \\
+&amp; = &amp; \sum_{j=1}^3
+\left. \frac{\partial f(\boldsymbol{r}')}{\partial x'_j} \right|
+  _{ \boldsymbol{r}'=R^{-1}\boldsymbol{r} }
+\left( R^{-1} \right)_{ji} \\
+&amp; = &amp; \sum_{j=1}^3 R_{ij}
+\left. \frac{\partial f(\boldsymbol{r}')}{\partial x'_j} \right|
+  _{ \boldsymbol{r}'=R^{-1}\boldsymbol{r} }\end{split}\]</div>
+</div>
+<div class="section" id="id8">
+<h2><span class="section-number">3.8. </span>微分演算子<a class="headerlink" href="#id8" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="math notranslate nohighlight">
+\[\frac{\partial f}{\partial x_i}
+= \sum_{j=1}^3 \frac{\partial f}{\partial x_j'}\frac{\partial x_j'}{\partial x_i}
+= \sum_{j=1}^3 \frac{\partial f}{\partial x_j'} R_{ji}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+R^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial x_1'} \\
+\frac{\partial f}{\partial x_2'} \\
+\frac{\partial f}{\partial x_3'}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}R \begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{\partial f}{\partial x_1'} \\
+\frac{\partial f}{\partial x_2'} \\
+\frac{\partial f}{\partial x_3'}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\frac{\partial f}{\partial x_i}
+&amp; = &amp; \sum_{j=1}^3 \frac{\partial f}{\partial \alpha_j}\frac{\partial \alpha_j}{\partial x_i}
+= \sum_{j=1}^3 \frac{\partial f}{\partial \alpha_j} (A^{-1})_{ji} \\
+&amp; = &amp; \frac{1}{2\pi} \sum_{j=1}^3 B_{ij} \frac{\partial f}{\partial \alpha_j}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+(A^{-1})^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+\frac{1}{2\pi} B
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+2\pi B^{-1}
+\begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+A^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}R \begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+R (A^{-1})^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{\partial f}{\partial x_1'} \\
+\frac{\partial f}{\partial x_2'} \\
+\frac{\partial f}{\partial x_3'}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}A^\top R \begin{pmatrix}
+\frac{\partial f}{\partial x_1} \\
+\frac{\partial f}{\partial x_2} \\
+\frac{\partial f}{\partial x_3}
+\end{pmatrix}
+=
+A^\top R (A^{-1})^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+A^\top \begin{pmatrix}
+\frac{\partial f}{\partial x_1'} \\
+\frac{\partial f}{\partial x_2'} \\
+\frac{\partial f}{\partial x_3'}
+\end{pmatrix}
+=
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha'_1} \\
+\frac{\partial f}{\partial \alpha'_2} \\
+\frac{\partial f}{\partial \alpha'_3}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{\partial f}{\partial \alpha'_1} \\
+\frac{\partial f}{\partial \alpha'_2} \\
+\frac{\partial f}{\partial \alpha'_3}
+\end{pmatrix}
+=
+A^\top R (A^{-1})^\top
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+B^{-1} R B
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}\begin{pmatrix}
+\frac{\partial f}{\partial \alpha_1} \\
+\frac{\partial f}{\partial \alpha_2} \\
+\frac{\partial f}{\partial \alpha_3}
+\end{pmatrix}
+=
+B^{-1} R B
+\begin{pmatrix}
+\frac{\partial f}{\partial \alpha'_1} \\
+\frac{\partial f}{\partial \alpha'_2} \\
+\frac{\partial f}{\partial \alpha'_3}
+\end{pmatrix}\end{split}\]</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">目次</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">3. 座標変換と回転</a><ul>
+<li><a class="reference internal" href="#id2">3.1. 格子座標</a></li>
+<li><a class="reference internal" href="#id3">3.2. 回転+並進</a></li>
+<li><a class="reference internal" href="#id4">3.3. 関数の回転</a></li>
+<li><a class="reference internal" href="#id5">3.4. 関数に回転不変性がある場合</a></li>
+<li><a class="reference internal" href="#id6">3.5. 回転と並進がある場合の関数の変換</a></li>
+<li><a class="reference internal" href="#bloch">3.6. Bloch関数の変換</a></li>
+<li><a class="reference internal" href="#id7">3.7. 回転不変性を持つ関数の微分</a></li>
+<li><a class="reference internal" href="#id8">3.8. 微分演算子</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="xc.html"
+                        title="前の章へ"><span class="section-number">2. </span>交換相関汎関数について</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/rotation.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="xc.html" title="2. 交換相関汎関数について"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">3. </span>座標変換と回転</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, J.-I. Iwata.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,219 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. 局所ポテンシャルについて &#8212; First-principles calculation code  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="2. 交換相関汎関数について" href="xc.html" />
+    <link rel="prev" title="Welcome to First-principles&#39;s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="xc.html" title="2. 交換相関汎関数について"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to First-principles&#39;s documentation!"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>局所ポテンシャルについて</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1><span class="section-number">1. </span>局所ポテンシャルについて<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<p>バルク結晶中の全ての原子核またはイオンが作るポテンシャルについて考える。
+原点に置かれた１個の原子 <span class="math notranslate nohighlight">\(a\)</span> が作るポテンシャルを</p>
+<div class="math notranslate nohighlight" id="equation-loc1">
+<span class="eqno">(1)<a class="headerlink" href="#equation-loc1" title="この数式へのパーマリンク">¶</a></span>\[v_a (\boldsymbol{r}) = v_a ( \left| \boldsymbol{r} \right| ) = v_a(r)\]</div>
+<p>とし、球対称性（原点からの距離のみに依存する事）を仮定する。
+通常、物質科学では、原子核が作る裸のクーロンポテンシャル（ <span class="math notranslate nohighlight">\(=-Z_a/r\)</span> ）か、
+閉殻になっている内殻電子と原子核を一緒にしたイオンが作るポテンシャルしか考えないので、
+実際上球対称ポテンシャル以外を扱うケースはまずない。</p>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{R}_a\)</span> をユニットセル内の原子位置とし、
+<span class="math notranslate nohighlight">\(\boldsymbol{R}\)</span> を任意の格子並進ベクトルとする。
+このとき、バルク結晶中の全ての原子が点 <span class="math notranslate nohighlight">\(\boldsymbol{r}\)</span> に作るポテンシャルは</p>
+<div class="math notranslate nohighlight" id="equation-loc2">
+<span class="eqno">(2)<a class="headerlink" href="#equation-loc2" title="この数式へのパーマリンク">¶</a></span>\[v(\boldsymbol{r}) = \sum_{\boldsymbol{R}} \sum_{a=1}^{N_{\rm atom}}
+v_a (\boldsymbol{r}-\boldsymbol{R}_a-\boldsymbol{R})\]</div>
+<p>と書ける。この関数は格子ベクトルの周期性を持つ。すなわち</p>
+<div class="math notranslate nohighlight" id="equation-loc3">
+<span class="eqno">(3)<a class="headerlink" href="#equation-loc3" title="この数式へのパーマリンク">¶</a></span>\[\begin{split}v(\boldsymbol{r}+\boldsymbol{R}') &amp; = &amp; \sum_{\boldsymbol{R}} \sum_{a=1}^{N_{\rm atom}}
+v_a (\boldsymbol{r}+\boldsymbol{R}'-\boldsymbol{R}_a-\boldsymbol{R})
+\\
+&amp; = &amp; \sum_{\boldsymbol{R}''} \sum_{a=1}^{N_{\rm atom}}
+v_a (\boldsymbol{r}-\boldsymbol{R}_a-\boldsymbol{R}'') = v(\boldsymbol{r})\end{split}\]</div>
+<p>となるので、フーリエ級数で表す事もできる。</p>
+<div class="math notranslate nohighlight" id="equation-loc4">
+<span class="eqno">(4)<a class="headerlink" href="#equation-loc4" title="この数式へのパーマリンク">¶</a></span>\[v(\boldsymbol{r}) = \sum_{\boldsymbol{G}} v(\boldsymbol{G})
+e^{ i\boldsymbol{G} \cdot \boldsymbol{r} }\]</div>
+<p><span class="math notranslate nohighlight">\(\boldsymbol{G}\)</span> は逆格子ベクトルであり、
+全ての実格子ベクトル <span class="math notranslate nohighlight">\(\boldsymbol{R}\)</span> に対して、</p>
+<div class="math notranslate nohighlight">
+\[e^{i \boldsymbol{G} \cdot \boldsymbol{R}} = 1\]</div>
+<p>という関係を満たすものになっている。</p>
+<p>ユニットセルの体積を <span class="math notranslate nohighlight">\(\Omega\)</span> とすると、フーリエ係数 <span class="math notranslate nohighlight">\(v(\boldsymbol{G})\)</span> は次のように
+計算される。</p>
+<div class="math notranslate nohighlight" id="equation-loc5">
+<span class="eqno">(5)<a class="headerlink" href="#equation-loc5" title="この数式へのパーマリンク">¶</a></span>\[\frac{1}{\Omega} \int_{\Omega} d\boldsymbol{r}
+v(\boldsymbol{r}) e^{-i\boldsymbol{G}\cdot\boldsymbol{r}}
+= \frac{1}{\Omega} \sum_{\boldsymbol{G}'} v(\boldsymbol{G}')
+\int_{\Omega} d\boldsymbol{r}
+e^{ i \left( \boldsymbol{G}'-\boldsymbol{G} \right) \cdot \boldsymbol{r} }
+= v(\boldsymbol{G})\]</div>
+<p>ここで、</p>
+<div class="math notranslate nohighlight" id="equation-loc6">
+<span class="eqno">(6)<a class="headerlink" href="#equation-loc6" title="この数式へのパーマリンク">¶</a></span>\[\begin{split}\int_{\Omega} d\boldsymbol{r} e^{ i \boldsymbol{G} \cdot \boldsymbol{r} }
+=
+\left\{
+\begin{array}{cc}
+\Omega &amp; \left(\boldsymbol{G} = 0 \right) \\
+0 &amp; \left(\boldsymbol{G} \ne 0 \right)
+\end{array}
+\right.\end{split}\]</div>
+<p>となる事を用いた。もう一度、今度は <span class="math notranslate nohighlight">\(v(\boldsymbol{r})\)</span> に <a class="reference internal" href="#equation-loc2">(2)</a> 式を代入して
+フーリエ係数の計算を行なう。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}v_\boldsymbol{G}
+&amp; = &amp;
+\frac{1}{\Omega} \int_{\Omega} d\boldsymbol{r}
+v(\boldsymbol{r}) e^{-i\boldsymbol{G}\cdot\boldsymbol{r}}
+\\
+&amp; = &amp;
+\frac{1}{\Omega} \sum_{\boldsymbol{R}} \sum_{a=1}^{N_{\rm atom}}
+\int_{\Omega} d\boldsymbol{r}
+v_a (\boldsymbol{r}-\boldsymbol{R}_a-\boldsymbol{R})
+e^{ -i \boldsymbol{G} \cdot \boldsymbol{r} }
+\\
+&amp; = &amp;
+\frac{1}{\Omega} \sum_{\boldsymbol{R}} \sum_{a=1}^{N_{\rm atom}}
+\int_{\Omega} d\boldsymbol{r}
+v_a (\boldsymbol{r}-\boldsymbol{R}_a-\boldsymbol{R})
+e^{ -i \boldsymbol{G} \cdot (\boldsymbol{r}-\boldsymbol{R}) }
+\\
+&amp; = &amp;
+\frac{1}{\Omega} \sum_{a=1}^{N_{\rm atom}}
+\int d\boldsymbol{r}
+v_a (\boldsymbol{r}-\boldsymbol{R}_a)
+e^{ -i \boldsymbol{G} \cdot \boldsymbol{r} }
+\\
+&amp; = &amp;
+\frac{1}{\Omega} \sum_{a=1}^{N_{\rm atom}}
+e^{ -i \boldsymbol{G} \cdot \boldsymbol{R}_a }
+\int d\boldsymbol{r}
+v_a (\boldsymbol{r})
+e^{ -i \boldsymbol{G} \cdot \boldsymbol{r} }\end{split}\]</div>
+<p>ここで積分範囲がユニットセル内の空間から全空間になっている事に注意する。最後の積分は、
+平面波の多重極展開の式</p>
+<div class="math notranslate nohighlight">
+\[e^{ i \boldsymbol{G} \cdot \boldsymbol{r} } =
+\sum_{l=0}^{\infty} \sum_{m=-l}^{l} 4\pi i^l j_l(Gr)
+Y_{lm}^*(\hat{G}) Y_{lm}(\hat{r})\]</div>
+<p>を用いて次のように計算される
+（ちなみに <span class="math notranslate nohighlight">\(j_l\)</span> は球ベッセル関数、 <span class="math notranslate nohighlight">\(Y_{lm}\)</span> は球面調和関数である）。</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\int d\boldsymbol{r}
+v_a (\boldsymbol{r})
+e^{ -i \boldsymbol{G} \cdot \boldsymbol{r} }
+&amp; = &amp;
+\sum_{l=0}^{\infty} \sum_{m=-l}^{l} 4\pi (-i)^l Y_{lm}(\hat{G})
+\int_0^\infty dr r^2 v_a(r) j_l(Gr)
+\int d\hat{r}  \sqrt{4\pi} Y_{00}(\hat{r}) Y_{lm}^*(\hat{r})
+\\
+&amp; = &amp;
+4\pi \int_0^\infty dr r^2 v_a(r) j_0(Gr)  \equiv  4\pi v_a(G)\end{split}\]</div>
+<p>動径積分 <span class="math notranslate nohighlight">\(v_a(G)\)</span> は、 <span class="math notranslate nohighlight">\(v_a(r)\)</span> がクーロンポテンシャルの場合は</p>
+<div class="math notranslate nohighlight">
+\[v_a(G) = -\frac{Z_a}{G^2}\]</div>
+<p>と解析的に求められる。それ以外の場合、例えば擬ポテンシャル法で <span class="math notranslate nohighlight">\(v_a(r)\)</span>
+が数値データとして与えられるような場合には、動径積分は数値積分で評価する必要がある。
+その際、ポテンシャルは無限遠方まで有意な値を持つ（ <span class="math notranslate nohighlight">\(\simeq -Z_a/r\)</span>）にも関わらず、
+データは有限の距離までで打ち切られたものしか与えられない事に注意が必要である。</p>
+<p>結果をまとめると、フーリエ係数 <span class="math notranslate nohighlight">\(v(\boldsymbol{G})\)</span> は、</p>
+<div class="math notranslate nohighlight">
+\[v(\boldsymbol{G}) =
+\frac{4\pi}{\Omega} \sum_{a=1}^{N_{\rm atom}}
+v_a(G)  e^{ -i \boldsymbol{G} \cdot \boldsymbol{R}_a }\]</div>
+<p>という式で求める事ができる。これをフーリエ変換して実空間の関数に戻せば <span class="math notranslate nohighlight">\(v(\boldsymbol{r})\)</span>
+が得られる。</p>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="index.html"
+                        title="前の章へ">Welcome to First-principles's documentation!</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="xc.html"
+                        title="次の章へ"><span class="section-number">2. </span>交換相関汎関数について</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/local.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="xc.html" title="2. 交換相関汎関数について"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to First-principles&#39;s documentation!"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">1. </span>局所ポテンシャルについて</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, J.-I. Iwata.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>

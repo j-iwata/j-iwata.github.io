@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>RSDFT/Viewer</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<link type="text/css" rel="stylesheet" href="main.css">
+		<style>
+			#menu {
+				position: absolute;
+				bottom: 20px;
+				width: 100%;
+				text-align: center;
+				padding: 0;
+				margin: 0;
+			}
+			#menu2 {
+				position: absolute;
+				top: 10px;
+				width: 100%;
+				text-align: left;
+				padding: 0;
+				margin: 10px;
+			}
+			button {
+				color: rgb(255,255,255);
+				background: transparent;
+				border: 0px;
+				padding: 5px 10px;
+				cursor: pointer;
+			}
+			button:hover {
+				background-color: rgba(0,255,255,0.5);
+			}
+			button:active {
+				color: #000000;
+				background-color: rgba(0,255,255,1);
+			}
+
+			.label {
+				text-shadow: -1px 1px 1px rgb(0,0,0);
+				margin-left: 25px;
+				font-size: 20px;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="container"></div>
+		<!-- <div id="info"><a href="https://threejs.org" target="_blank" rel="noopener">three.js webgl</a></div> -->
+		<div id="menu"></div>
+		<div id="menu2">
+			<!-- <input type="file" accept=".pdb,.cif,.970,.97,.197" id="mybutton"/> -->
+			<input type="file" accept=".pdb, .cif" id="mybutton"/>
+		</div>
+
+		<!-- <script>
+			// let inp = document.getElementById('file1');
+			// console.log(inp);
+			// inp.addEventListener('change', () => {
+			// 	alert('ファイルを読み込みました！');
+			// });
+			// console.log("Hello");
+			function buttonClick() {
+				let d = new Date();
+				console.log(d.toString);
+			}
+			let button = document.getElementBtId('mybutton');
+			button.addEventListener('click', buttonClick);
+		</script> -->
+
+		<script type="module">
+
+			import * as THREE from './three.module.js';
+
+			import { TrackballControls } from './TrackballControls.js';
+			import { OrbitControls } from './OrbitControls.js';
+			import { PDBLoader } from './PDBLoader.js';
+			import { CIFLoader } from './CIFLoader.js';
+			import { CSS2DRenderer, CSS2DObject } from './CSS2DRenderer.js';
+
+			let camera, scene, renderer, labelRenderer;
+			let controls;
+
+			let root;
+
+            var gridHelper, axisHelper, lightHelper;
+
+			const MOLECULES = {
+				"Ethanol": "ethanol.pdb",
+				"Aspirin": "aspirin.pdb",
+				"Caffeine": "caffeine.pdb",
+				"Nicotine": "nicotine.pdb",
+				"LSD": "lsd.pdb",
+				"Cocaine": "cocaine.pdb",
+				"Cholesterol": "cholesterol.pdb",
+				"Lycopene": "lycopene.pdb",
+				"Glucose": "glucose.pdb",
+				"Aluminium oxide": "Al2O3.pdb",
+				"Cubane": "cubane.pdb",
+				"Copper": "cu.pdb",
+				"Fluorite": "caf2.pdb",
+				"Salt": "nacl.pdb",
+				"YBCO superconductor": "ybco.pdb",
+				"Buckyball": "buckyball.pdb",
+				"Graphite": "graphite.pdb",
+			};
+
+			// const loader = new PDBLoader();
+			const loader = new CIFLoader();
+			const offset = new THREE.Vector3();
+
+			const menu = document.getElementById( 'menu' );
+			const mybutton = document.getElementById( 'mybutton' );
+
+			//
+
+			const globalWidth = document.querySelector('html').clientWidth;
+			const globalHeight = document.querySelector('html').clientHeight;
+			let mouse = new THREE.Vector2(-2,-2);
+			// document.addEventListener('mousemove', function(e) {
+			document.addEventListener('click', function(e) {
+				// console.log("aaa2",e.target.offsetWidth,e.target.offsetHeight);
+				// console.log("bbbb",typeof(e));
+				// console.log("offset",e.offsetX,e.offsetY);
+				// console.log("screen",e.screenX,e.screenY);
+				// console.log(e.target);
+				// console.log("clientX,clientY",e.clientX,e.clientY);
+				// let rect = e.target.getBoundingClientRect();
+				// console.log(rect);
+				// console.log(rect.width,rect.height)
+				// const width = e.target.clientWidth;
+				// const height = e.target.clientHeight;
+				// console.log("clientWidth,clientHeight",width,height);
+				mouse.x = (e.clientX - globalWidth) / globalWidth * 2 + 1;
+				mouse.y = (e.clientY - globalHeight) / globalHeight * -2 - 1;
+				// console.log("rect.left,rect.top",rect.left,rect.top);
+				// console.log("mouseX,mouseY",mouse.x,mouse.y);
+			});
+
+			init();
+			animate();
+
+			function init() {
+
+				scene = new THREE.Scene();
+				scene.background = new THREE.Color( 0x050505 );
+
+				const light1 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+				light1.position.set( 1, 1, 1 );
+			    scene.add( light1 );
+
+				//const light2 = new THREE.DirectionalLight( 0xffffff, 0.5 );
+				//light2.position.set( 200, 200, -200 );
+				//scene.add( light2 );
+
+				const lighta = new THREE.AmbientLight( 0xffffff, 0.5 );
+				scene.add( lighta );
+
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 5000 );
+				camera.position.z = 1000;
+                camera.add(light1);
+				scene.add( camera );
+
+				root = new THREE.Group();
+				scene.add( root );
+
+				// console.log("hhhh",scene.children);
+				// let aaa = scene.children;
+				// console.log(aaa[0],aaa[1],aaa[2]);
+				// console.log(typeof(aaa[0]),typeof(aaa[1]),typeof(aaa[2]));
+				// console.log(yyy);
+				//
+
+				// gridHelper = new THREE.GridHelper(2000, 20);
+				// scene.add(gridHelper);
+
+				// axisHelper = new THREE.AxesHelper(1000);
+				// scene.add(axisHelper);
+
+				// var textGeo = new THREE.TextGeometry('Y', {
+     			// 	size: 5,
+				// 	height: 2,
+				// 	curveSegments: 6,
+				// 	font: helvetiker,
+				// 	style: "normal"       
+				// });
+				// var color = new THREE.Color();
+				// color.setRGB(255, 250, 250);
+				// var textMaterial = new THREE.MeshBasicMaterial({ color: color });
+				// var text = new THREE.Mesh(textGeo , textMaterial);
+				// text.position.x = axisHelper.geometry.vertices[1].x;
+				// text.position.y = axisHelper.geometry.vertices[1].y;
+				// text.position.z = axisHelper.geometry.vertices[1].z;
+				// text.rotation = camera.rotation;
+				// scene.add(text);
+
+            	// lightHelper = new THREE.DirectionalLightHelper(light1, 50);
+				// scene.add(lightHelper);
+				//lightHelper = new THREE.DirectionalLightHelper(light2, 50);
+				//scene.add(lightHelper);
+
+				//
+
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.getElementById( 'container' ).appendChild( renderer.domElement );
+
+				labelRenderer = new CSS2DRenderer();
+				labelRenderer.setSize( window.innerWidth, window.innerHeight );
+				labelRenderer.domElement.style.position = 'absolute';
+				labelRenderer.domElement.style.top = '0px';
+				labelRenderer.domElement.style.pointerEvents = 'none';
+				document.getElementById( 'container' ).appendChild( labelRenderer.domElement );
+
+				//
+
+				//controls = new TrackballControls( camera, renderer.domElement );
+				controls = new OrbitControls( camera, renderer.domElement );
+				//controls.minDistance = 500;
+				//controls.maxDistance = 2000;
+				//controls.rotateSpeed = 3.0;
+				//controls.zoomSpeed = 1.0;
+				//controls.panSpeed = 2.0;
+
+				//
+
+				loadMolecule( 'pdb/caffeine.pdb' );
+				createMenu();
+				createMenu2();
+				
+				//
+
+				window.addEventListener( 'resize', onWindowResize );
+
+			}
+
+			//
+
+			function createMenu2() {
+				let button = document.getElementById('mybutton');
+				button.addEventListener('change', () => {
+					// alert('ファイルを読み込みました！');
+					// buttonClick();
+					const file = button.files[0];
+					// console.log(button.files[0], typeof(file));
+					// const url = button.files[0].name;
+					// console.log(location.href);
+					// console.log(location.host);
+					// console.log(location.pathname);
+					let file_reader = new FileReader();
+					file_reader.readAsText(file);
+					file_reader.onload = function() {
+						const text = file_reader.result;
+						// console.log(text);
+						// console.log(file_reader.result);
+						loadMolecule2( text );
+					};
+					// console.log("aaa");
+					// console.log(text);
+					// loader.parse( text );
+				});
+			}
+
+			function buttonClick() {
+				let d = new Date();
+				console.log(d.toString());
+			}
+
+			function generateButtonCallback( url ) {
+
+				return function () {
+
+					loadMolecule( url );
+
+				};
+
+			}
+
+			function createMenu() {
+
+				for ( const m in MOLECULES ) {
+
+					const button = document.createElement( 'button' );
+					button.innerHTML = m;
+					menu.appendChild( button );
+
+					const url = 'pdb/' + MOLECULES[ m ];
+
+					button.addEventListener( 'click', generateButtonCallback( url ), false );
+
+				}
+
+			}
+
+			//
+
+			function loadMolecule( url ) {
+
+				while ( root.children.length > 0 ) {
+
+					const object = root.children[ 0 ];
+					object.parent.remove( object );
+
+				}
+
+				loader.load( url, function ( pdb ) {
+
+					const geometryAtoms = pdb.geometryAtoms;
+					const geometryBonds = pdb.geometryBonds;
+					const geometryLattice = pdb.geometryLattice;
+					const json = pdb.json;
+
+					const boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+					//const cylinderGeometry = new THREE.CylinderGeometry( 1, 1, 1, 32 );
+					const sphereGeometry = new THREE.IcosahedronGeometry( 1, 3 );
+
+					geometryAtoms.computeBoundingBox();
+					geometryAtoms.boundingBox.getCenter( offset ).negate();
+
+					geometryAtoms.translate( offset.x, offset.y, offset.z );
+					geometryBonds.translate( offset.x, offset.y, offset.z );
+					geometryLattice.translate( offset.x, offset.y, offset.z );
+
+					let positions = geometryAtoms.getAttribute( 'position' );
+					const colors = geometryAtoms.getAttribute( 'color' );
+
+					const position = new THREE.Vector3();
+					const color = new THREE.Color();
+
+					for ( let i = 0; i < positions.count; i ++ ) {
+
+						position.x = positions.getX( i );
+						position.y = positions.getY( i );
+						position.z = positions.getZ( i );
+
+						color.r = colors.getX( i );
+						color.g = colors.getY( i );
+						color.b = colors.getZ( i );
+
+						//const material = new THREE.MeshBasicMaterial( { color: color } );
+						const material = new THREE.MeshLambertMaterial( { color: color } );
+						//const material = new THREE.MeshPhongMaterial( { color: color } );
+
+						const object = new THREE.Mesh( sphereGeometry, material );
+						object.position.copy( position );
+						object.position.multiplyScalar( 75 );
+						object.scale.multiplyScalar( 25 );
+						object.name = 'atom';
+						root.add( object );
+
+						const atom = json.atoms[ i ];
+
+						const text = document.createElement( 'div' );
+						text.className = 'label';
+						text.style.color = 'rgb(' + atom[ 3 ][ 0 ] + ',' + atom[ 3 ][ 1 ] + ',' + atom[ 3 ][ 2 ] + ')';
+						text.textContent = atom[ 4 ];
+
+						const label = new CSS2DObject( text );
+						label.position.copy( object.position );
+						root.add( label );
+
+					}
+
+					positions = geometryBonds.getAttribute( 'position' );
+
+					const start = new THREE.Vector3();
+					const end = new THREE.Vector3();
+
+					for ( let i = 0; i < positions.count; i += 2 ) {
+
+						start.x = positions.getX( i );
+						start.y = positions.getY( i );
+						start.z = positions.getZ( i );
+
+						end.x = positions.getX( i + 1 );
+						end.y = positions.getY( i + 1 );
+						end.z = positions.getZ( i + 1 );
+
+						start.multiplyScalar( 75 );
+						end.multiplyScalar( 75 );
+
+						//const object = new THREE.Mesh( boxGeometry, new THREE.MeshPhongMaterial( 0xffffff ) );
+						const object = new THREE.Mesh( boxGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						//const object = new THREE.Mesh( cylinderGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						object.position.copy( start );
+						object.position.lerp( end, 0.5 );
+						object.scale.set( 5, 5, start.distanceTo( end ) );
+						object.lookAt( end );
+						root.add( object );
+
+					}
+
+					positions = geometryLattice.getAttribute( 'position' );
+
+					for ( let i = 0; i < positions.count; i += 2 ) {
+
+						start.x = positions.getX( i );
+						start.y = positions.getY( i );
+						start.z = positions.getZ( i );
+
+						end.x = positions.getX( i + 1 );
+						end.y = positions.getY( i + 1 );
+						end.z = positions.getZ( i + 1 );
+
+						start.multiplyScalar( 75 );
+						end.multiplyScalar( 75 );
+
+						//const object = new THREE.Mesh( boxGeometry, new THREE.MeshPhongMaterial( 0xffffff ) );
+						const object = new THREE.Mesh( boxGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						//const object = new THREE.Mesh( cylinderGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						object.position.copy( start );
+						object.position.lerp( end, 0.5 );
+						object.scale.set( 5, 5, start.distanceTo( end ) );
+						object.lookAt( end );
+						root.add( object );
+
+					}
+
+					render();
+
+				} );
+
+			}
+
+
+			function loadMolecule2( text ) {
+
+				while ( root.children.length > 0 ) {
+
+					const object = root.children[ 0 ];
+					object.parent.remove( object );
+
+				}
+
+				loader.load2( text, function ( pdb ) {
+
+					const geometryAtoms = pdb.geometryAtoms;
+					const geometryBonds = pdb.geometryBonds;
+					const geometryLattice = pdb.geometryLattice;
+					const json = pdb.json;
+
+					const boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+					//const cylinderGeometry = new THREE.CylinderGeometry( 1, 1, 1, 32 );
+					const sphereGeometry = new THREE.IcosahedronGeometry( 1, 3 );
+
+					geometryAtoms.computeBoundingBox();
+					geometryAtoms.boundingBox.getCenter( offset ).negate();
+
+					geometryAtoms.translate( offset.x, offset.y, offset.z );
+					geometryBonds.translate( offset.x, offset.y, offset.z );
+					geometryLattice.translate( offset.x, offset.y, offset.z );
+
+					let positions = geometryAtoms.getAttribute( 'position' );
+					const colors = geometryAtoms.getAttribute( 'color' );
+
+					const position = new THREE.Vector3();
+					const color = new THREE.Color();
+
+					for ( let i = 0; i < positions.count; i ++ ) {
+
+						position.x = positions.getX( i );
+						position.y = positions.getY( i );
+						position.z = positions.getZ( i );
+
+						color.r = colors.getX( i );
+						color.g = colors.getY( i );
+						color.b = colors.getZ( i );
+
+						//const material = new THREE.MeshBasicMaterial( { color: color } );
+						const material = new THREE.MeshLambertMaterial( { color: color } );
+						//const material = new THREE.MeshPhongMaterial( { color: color } );
+
+						const object = new THREE.Mesh( sphereGeometry, material );
+						object.position.copy( position );
+						object.position.multiplyScalar( 75 );
+						object.scale.multiplyScalar( 25 );
+						object.name = 'atom';
+						root.add( object );
+
+						const atom = json.atoms[ i ];
+
+						const text = document.createElement( 'div' );
+						text.className = 'label';
+						text.style.color = 'rgb(' + atom[ 3 ][ 0 ] + ',' + atom[ 3 ][ 1 ] + ',' + atom[ 3 ][ 2 ] + ')';
+						text.textContent = atom[ 4 ];
+
+						const label = new CSS2DObject( text );
+						label.position.copy( object.position );
+						root.add( label );
+
+					}
+
+					positions = geometryBonds.getAttribute( 'position' );
+
+					const start = new THREE.Vector3();
+					const end = new THREE.Vector3();
+
+					for ( let i = 0; i < positions.count; i += 2 ) {
+
+						start.x = positions.getX( i );
+						start.y = positions.getY( i );
+						start.z = positions.getZ( i );
+
+						end.x = positions.getX( i + 1 );
+						end.y = positions.getY( i + 1 );
+						end.z = positions.getZ( i + 1 );
+
+						start.multiplyScalar( 75 );
+						end.multiplyScalar( 75 );
+
+						//const object = new THREE.Mesh( boxGeometry, new THREE.MeshPhongMaterial( 0xffffff ) );
+						const object = new THREE.Mesh( boxGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						//const object = new THREE.Mesh( cylinderGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						object.position.copy( start );
+						object.position.lerp( end, 0.5 );
+						object.scale.set( 5, 5, start.distanceTo( end ) );
+						object.lookAt( end );
+						root.add( object );
+
+					}
+
+					positions = geometryLattice.getAttribute( 'position' );
+
+					for ( let i = 0; i < positions.count; i += 2 ) {
+
+						start.x = positions.getX( i );
+						start.y = positions.getY( i );
+						start.z = positions.getZ( i );
+
+						end.x = positions.getX( i + 1 );
+						end.y = positions.getY( i + 1 );
+						end.z = positions.getZ( i + 1 );
+
+						start.multiplyScalar( 75 );
+						end.multiplyScalar( 75 );
+
+						//const object = new THREE.Mesh( boxGeometry, new THREE.MeshPhongMaterial( 0xffffff ) );
+						const object = new THREE.Mesh( boxGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						//const object = new THREE.Mesh( cylinderGeometry, new THREE.MeshLambertMaterial( 0xffffff ) );
+						object.position.copy( start );
+						object.position.lerp( end, 0.5 );
+						object.scale.set( 5, 5, start.distanceTo( end ) );
+						object.lookAt( end );
+						root.add( object );
+
+					}
+
+					render();
+
+				} );
+
+			}
+
+
+			//
+
+			function onWindowResize() {
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				labelRenderer.setSize( window.innerWidth, window.innerHeight );
+
+				render();
+
+			}
+
+			function animate() {
+
+				requestAnimationFrame( animate );
+
+				let raycaster = new THREE.Raycaster();
+
+				raycaster.setFromCamera(mouse, camera);
+
+				let array = raycaster.intersectObjects(scene.children, true);
+				if ( array.length ) {
+					let i = 0;
+					for ( i = 0; i < array.length; i++ ) {
+						if ( array[i].object.name === 'atom' ) {
+							break;
+						}
+					}
+					if ( i < array.length ) {
+						// console.log("i=",i,array.length);
+						if ( array[i].object.name === 'atom' ) {
+							// console.log(mouse.x,mouse.y);
+							// console.log(array[0].object.material);
+							// array[0].object.material.emissive = new THREE.Color(0x999999);
+							let emissive = array[i].object.material.emissive
+							if ( emissive.r === 0.0 && emissive.g === 0.0 && emissive.b === 0.0 ) {
+								array[i].object.material.emissive = new THREE.Color(0x999999);
+							} else {
+								array[i].object.material.emissive = new THREE.Color(0x000000);
+							}
+							// let opacity = array[0].object.material.opacity
+							// console.log("opacity",opacity)
+							// if ( opacity === 1 ) {
+							// 	array[0].object.material.opacity = 0.6;
+							// 	array[0].object.material.transparent = true;
+							// } else {
+							// 	array[0].object.material.opacity = 1.0;
+							// 	array[0].object.material.transparent = false;
+							// }
+						}
+						mouse.x = -2;
+						mouse.y = -2;
+					}
+				}
+
+				controls.update();
+
+				// const time = Date.now() * 0.0004;
+				// root.rotation.x = time;
+				// root.rotation.y = time * 0.7;
+
+				render();
+
+			}
+
+			function render() {
+
+				renderer.render( scene, camera );
+				// labelRenderer.render( scene, camera );
+
+			}
+
+		</script>
+	</body>
+</html>

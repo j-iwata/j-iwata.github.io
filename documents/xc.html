@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. 交換相関汎関数について &#8212; First-principles calculation code  ドキュメント</title>
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/classic.css" />
+    
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/translations.js"></script>
+    <script async="async" src="_static/mathjax/tex-chtml.js"></script>
+    
+    <link rel="index" title="索引" href="genindex.html" />
+    <link rel="search" title="検索" href="search.html" />
+    <link rel="next" title="3. 座標変換と回転" href="rotation.html" />
+    <link rel="prev" title="1. 局所ポテンシャルについて" href="local.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             accesskey="I">索引</a></li>
+        <li class="right" >
+          <a href="rotation.html" title="3. 座標変換と回転"
+             accesskey="N">次へ</a> |</li>
+        <li class="right" >
+          <a href="local.html" title="1. 局所ポテンシャルについて"
+             accesskey="P">前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>交換相関汎関数について</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="id1">
+<h1><span class="section-number">2. </span>交換相関汎関数について<a class="headerlink" href="#id1" title="このヘッドラインへのパーマリンク">¶</a></h1>
+<div class="section" id="id2">
+<h2><span class="section-number">2.1. </span>スピン分極がある場合の交換エネルギー<a class="headerlink" href="#id2" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<p>スピン自由度を考慮した交換エネルギーの表式を考える。まず以下のように
+<span class="math notranslate nohighlight">\(\alpha\)</span> スピンと <span class="math notranslate nohighlight">\(\beta\)</span> スピンがそれぞれある場合の和で書けると仮定する <a class="footnote-reference brackets" href="#f1" id="id3">1</a> 。</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \rho^\alpha, \rho^\beta \right] = E_{\rm x} \left[ \rho^\alpha, 0 \right]
++ E_{\rm x} \left[ 0, \rho^\beta \right]\]</div>
+<p>スピン分極がない場合、すなわち</p>
+<div class="math notranslate nohighlight">
+\[\rho^\alpha = \rho^\beta = \frac{\rho}{2}\]</div>
+<p>という場合の交換エネルギーは</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \frac{\rho}{2}, \frac{\rho}{2} \right]
+  = E_{\rm x} \left[ \frac{\rho}{2}, 0 \right]
+  + E_{\rm x} \left[ 0, \frac{\rho}{2} \right]\]</div>
+<p>となる。また</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \frac{\rho}{2}, 0 \right] = E_{\rm x} \left[ 0, \frac{\rho}{2} \right]\]</div>
+<p>であると考えられる。スピン分極がない場合の交換エネルギーの表式
+<span class="math notranslate nohighlight">\(E_x \left[ \rho \right]\)</span> が分かっていれば</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \rho \right] = E_{\rm x} \left[ \frac{\rho}{2}, \frac{\rho}{2} \right]\]</div>
+<p>となるので、</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \rho \right] = E_{\rm x} \left[ \frac{\rho}{2}, \frac{\rho}{2} \right]
+= 2E_{\rm x} \left[ \frac{\rho}{2}, 0 \right]
+= 2E_{\rm x} \left[ 0, \frac{\rho}{2} \right]\]</div>
+<p>という関係が成り立つ。以上よりスピン分極がある場合の汎関数形は、スピン分極がない場合の式を用いて次のように書ける事がわかる。</p>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \rho^\alpha, \rho^\beta \right]
+  = \frac{1}{2} E_{\rm x} \left[ 2\rho^\alpha \right]
+  + \frac{1}{2} E_{\rm x} \left[ 2\rho^\beta \right]\]</div>
+<p class="rubric">脚注</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets"><a class="fn-backref" href="#id3">1</a></span></dt>
+<dd><p>軌道や密度行列であれば容易に和で書き表す事ができるが、密度でも同様に書けるかは自明ではない。</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="lda">
+<h2><span class="section-number">2.2. </span>局所密度近似（LDA）<a class="headerlink" href="#lda" title="このヘッドラインへのパーマリンク">¶</a></h2>
+<div class="section" id="id4">
+<h3><span class="section-number">2.2.1. </span>交換エネルギー＆ポテンシャル<a class="headerlink" href="#id4" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[E_{\rm x} \left[ \rho \right] = \int d\boldsymbol{r} \rho(\boldsymbol{r})
+\varepsilon_{\rm x} \left[ \rho \right] (\boldsymbol{r})\]</div>
+<div class="math notranslate nohighlight">
+\[\varepsilon_{\rm x} \left[ \rho \right](\boldsymbol{r})
+= -\frac{3}{4} \left( \frac{3}{\pi} \right)^\frac{1}{3}
+               \left( \rho(\boldsymbol{r}) \right)^\frac{1}{3}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}v_{\rm x} \left[ \rho \right](\boldsymbol{r})
+&amp; = &amp; \frac{ \delta E_{\rm x}\left[ \rho \right] }{ \delta\rho(\boldsymbol{r}) }
+= \varepsilon_{\rm x} \left[ \rho \right](\boldsymbol{r})
+-\frac{1}{4} \left( \frac{3}{\pi} \right)^\frac{1}{3}
+             \left( \rho(\boldsymbol{r}) \right)^\frac{1}{3}
+\\
+&amp; = &amp; -\left( \frac{3}{\pi} \right)^\frac{1}{3}
+       \left( \rho(\boldsymbol{r}) \right)^\frac{1}{3}
+= \frac{4}{3} \varepsilon_{\rm x} \left[ \rho \right](\boldsymbol{r})\end{split}\]</div>
+<div class="math notranslate nohighlight">
+\[\begin{split}v_{\rm x}^{\sigma} \left[ \rho^\alpha, \rho^\beta \right](\boldsymbol{r})
+&amp; = &amp; \frac{ \delta E_{\rm x} \left[ \rho^\alpha, \rho^\beta \right] }
+       { \delta\rho^{\sigma}(\boldsymbol{r}) }
+= \left. \frac{ \delta E_{\rm x}\left[ \rho \right] }
+              { \delta\rho(\boldsymbol{r}) } \right|_{\rho=2\rho^\sigma}
+\\
+&amp; = &amp; -\left( \frac{3}{\pi} \right)^\frac{1}{3}
+\left( 2\rho^\sigma(\boldsymbol{r}) \right)^\frac{1}{3}\end{split}\]</div>
+</div>
+<div class="section" id="id5">
+<h3><span class="section-number">2.2.2. </span>スピン分極パラメータ<a class="headerlink" href="#id5" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<p><span class="math notranslate nohighlight">\(\rho=\rho^\alpha+\rho^\beta\)</span> として、スピン分極パラメータ <span class="math notranslate nohighlight">\(\zeta\)</span> を</p>
+<div class="math notranslate nohighlight">
+\[\zeta = \frac{ \rho^\alpha - \rho^\beta }{ \rho }\]</div>
+<p>で定義する。これを用いてスピン密度は</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\rho^\alpha &amp; = &amp; \frac{1}{2} \left( 1 + \zeta \right) \rho
+\\
+\rho^\beta &amp; = &amp; \frac{1}{2} \left( 1 - \zeta \right) \rho\end{split}\]</div>
+<p>と書ける。スピン分極がある場合の交換エネルギーを<span class="math notranslate nohighlight">\(\rho, \zeta\)</span> を用いて書き換える事を考える。この書き換えは、交換エネルギーに対しては特に必要ないが、相関エネルギーのスピン密度依存性を交換エネルギーと同じ形にとるという方針で導入するために必要となる。</p>
+</div>
+<div class="section" id="pz81">
+<h3><span class="section-number">2.2.3. </span>相関エネルギー＆ポテンシャル（PZ81）<a class="headerlink" href="#pz81" title="このヘッドラインへのパーマリンク">¶</a></h3>
+<div class="math notranslate nohighlight">
+\[E_{\rm c} \left[ \rho, \zeta \right] = \int d\boldsymbol{r} \rho(\boldsymbol{r})
+\varepsilon_{\rm c}\left[\rho,\zeta\right](\boldsymbol{r})\]</div>
+<div class="math notranslate nohighlight">
+\[\varepsilon_{\rm c}^{\rm U,P} =
+\frac{\gamma^{\rm U,P}} {1 + \beta_1^{\rm U,P} \sqrt{r_{\rm s}} + \beta_2^{\rm U,P}r_{\rm s}}
+\qquad \left( r_{\rm s} &gt; 1 \right)\]</div>
+<div class="math notranslate nohighlight">
+\[\varepsilon_{\rm c}^{\rm U,P} = A^{U,P} \ln{r_{\rm s}} + B^{\rm U,P}
++ C^{\rm U,P} r_{\rm s} \ln{r_{\rm s}} + D^{\rm U,P} r_{\rm s}
+\qquad \left( r_{\rm s} &lt; 1 \right)\]</div>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">目次</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">2. 交換相関汎関数について</a><ul>
+<li><a class="reference internal" href="#id2">2.1. スピン分極がある場合の交換エネルギー</a></li>
+<li><a class="reference internal" href="#lda">2.2. 局所密度近似（LDA）</a><ul>
+<li><a class="reference internal" href="#id4">2.2.1. 交換エネルギー＆ポテンシャル</a></li>
+<li><a class="reference internal" href="#id5">2.2.2. スピン分極パラメータ</a></li>
+<li><a class="reference internal" href="#pz81">2.2.3. 相関エネルギー＆ポテンシャル（PZ81）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>前のトピックへ</h4>
+  <p class="topless"><a href="local.html"
+                        title="前の章へ"><span class="section-number">1. </span>局所ポテンシャルについて</a></p>
+  <h4>次のトピックへ</h4>
+  <p class="topless"><a href="rotation.html"
+                        title="次の章へ"><span class="section-number">3. </span>座標変換と回転</a></p>
+  <div role="note" aria-label="source link">
+    <h3>このページ</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/xc.rst.txt"
+            rel="nofollow">ソースコードを表示</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">クイック検索</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="検索" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>ナビゲーション</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="総合索引"
+             >索引</a></li>
+        <li class="right" >
+          <a href="rotation.html" title="3. 座標変換と回転"
+             >次へ</a> |</li>
+        <li class="right" >
+          <a href="local.html" title="1. 局所ポテンシャルについて"
+             >前へ</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">First-principles calculation code  ドキュメント</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href=""><span class="section-number">2. </span>交換相関汎関数について</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; Copyright 2021, J.-I. Iwata.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 4.1.2.
+    </div>
+  </body>
+</html>
